@@ -1,5 +1,3 @@
-cisco openconnect bash script
-
 # install openconnect
 
 - sudo apt install openconnect
