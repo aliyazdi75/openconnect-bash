@@ -1,0 +1,71 @@
+#!/bin/bash
+
+tf=~/.vpnconfig
+
+if [ ! -e $tf ]; then
+	touch $tf
+fi
+
+pidfile="/tmp/openconnect-pid"
+
+case "$1" in
+start)
+        if ! grep -q username "$tf" || ! grep -q password "$tf" || ! grep -q url "$tf"; then
+        echo "First run: sudo vpn config"
+        exit 1
+        fi
+	username=$(grep "username :" $tf | awk '{print $3;}')
+	password=$(grep "password :" $tf | awk '{print $3;}')
+	url=$(grep "url :" $tf | awk '{print $3;}')
+        echo "$password" | openconnect -b --pid-file=$pidfile --user=$username $url --servercert sha256:d1988b24b9455378e624d87fc91c1696598b5303b43eb0695a51a33f9c20830f
+	exit 1
+	;;
+stop)
+	cat $pidfile  | xargs kill -2
+	exit 1
+	;;
+config)
+	printf "Which one do you want to config:\n(1)Username and Password\n(2)Server url\n(3)Both\n"
+	read ti
+	if (( ti == 1 || ti == 3));
+	then
+	if grep -q username "$tf"; then
+	read -p 'Enter your vpn username: ' username
+	sed -i "/username/d" $tf
+	echo username : $username >> $tf
+	else
+	read -p 'Enter your vpn username: ' username
+	echo username : $username >> $tf
+	fi
+	if grep -q password "$tf"; then
+        echo -n 'Enter your vpn password: '
+	read -s password
+	echo
+        sed -i "/password/d" $tf
+        echo password : $password >> $tf
+        else
+        echo -n 'Enter your vpn password: '
+        read -s password
+	echo
+        echo password : $password >> $tf
+        fi
+ 	fi
+	if (( ti == 2  || ti == 3 ));
+	then
+	if grep -q url "$tf"; then
+        read -p 'Enter your vpn server url: ' url
+        sed -i "/url/d" $tf
+        echo url : $url >> $tf
+        else
+        read -p 'Enter your vpn url: ' url
+        echo url : $url >> $tf
+        fi
+	fi
+	exit 1
+	;;
+*)
+        echo "$0 <start|stop|config>"
+        exit 1
+esac
+
+# Created By AliYazdi75
