@@ -14,12 +14,12 @@
 
 # Start VPN
 
-- $sudo vpn start
+- sudo vpn start
 - you can close your terminal, openconnect started in background
 
 # Stop vpn
 
-- $sudo vpn stop
+- sudo vpn stop
 
 # enjoy
 # Created by aliyazdi75
