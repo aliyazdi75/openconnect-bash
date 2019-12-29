@@ -8,7 +8,7 @@
 - sudo cp vpn /usr/bin
 
 # Config VPN
-
+(doesn't need every time)
 - sudo vpn config
 - chose your config choice
 
